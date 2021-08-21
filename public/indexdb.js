@@ -1,9 +1,13 @@
-  window.indexDB = window.indexDb || window.mozIndexedDB || window.webkitIndexedDb || window.msIndexedDB;
-  //make sure it is supported:
-  if (!window.indexedDB){
-    alert("Not Supported");
-  }
+const indexedDB =
+  window.indexedDB ||
+  window.mozIndexedDB ||
+  window.webkitIndexedDB ||
+  window.msIndexedDB ||
+  window.shimIndexedDB;
+
 let db;
+
+
 const request = indexedDB.open("budget", 1);
 request.onupgradeneeded = ({ target }) => {
   let db = target.result;
@@ -11,7 +15,7 @@ request.onupgradeneeded = ({ target }) => {
 };
 request.onsuccess = ({ target }) => {
   db = target.result;
-
+  // check if app is online before reading from db
   if (navigator.onLine) {
     checkDatabase();
   }
@@ -50,6 +54,5 @@ function checkDatabase() {
     }
   };
 }
-
 
 window.addEventListener("online", checkDatabase);
